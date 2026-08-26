@@ -5,11 +5,15 @@ import Invis_Mafia.config.MafiaConfig;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class MafiaBot extends Monster {
@@ -17,6 +21,7 @@ public class MafiaBot extends Monster {
     private final float damage;
     private final float moveSpeed;
     private int visibleWarningTicks;
+    private ArmorStand visibleBody;
 
     protected MafiaBot(EntityType<? extends MafiaBot> type, Level level, int troopTier, float damage, float moveSpeed) {
         super(type, level);
@@ -55,6 +60,8 @@ public class MafiaBot extends Monster {
             return;
         }
 
+        syncVisibleBody();
+
         if (!this.isInvisible()) {
             visibleWarningTicks++;
             if (visibleWarningTicks >= 40) {
@@ -82,6 +89,36 @@ public class MafiaBot extends Monster {
         if (this.distanceToSqr(target) > 96.0D) {
             this.setTarget(null);
         }
+    }
+
+    private void syncVisibleBody() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        if (visibleBody == null || !visibleBody.isAlive() || visibleBody.level() != this.level()) {
+            visibleBody = new ArmorStand(serverLevel, this.getX(), this.getY(), this.getZ());
+            visibleBody.setNoGravity(true);
+            visibleBody.setInvisible(false);
+            visibleBody.setShowArms(true);
+            visibleBody.setNoBasePlate(true);
+            visibleBody.setCustomName(this.getCustomName());
+            visibleBody.setCustomNameVisible(true);
+            visibleBody.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.NETHERITE_HELMET));
+            visibleBody.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
+            visibleBody.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
+            visibleBody.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
+            visibleBody.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.NETHERITE_SWORD));
+            serverLevel.addFreshEntity(visibleBody);
+        }
+
+        visibleBody.setPos(this.getX(), this.getY(), this.getZ());
+        visibleBody.setYRot(this.getYRot());
+        visibleBody.setYHeadRot(this.getYRot());
+        visibleBody.setInvisible(false);
+        visibleBody.setNoGravity(true);
+        visibleBody.setShowArms(true);
+        visibleBody.setNoBasePlate(true);
     }
 
     protected void triggerTntBurst() {
