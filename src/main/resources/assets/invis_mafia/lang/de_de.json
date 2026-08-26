@@ -1,4 +1,6 @@
 {
   "item.invis_mafia.mafia_summoner": "Mafia-Beschwörer",
-  "item.invis_mafia.mafia_summoner.lore": "Die Invis Mafia bleibt niemals sichtbar."
+  "item.invis_mafia.mafia_summoner.lore": "Die Invis Mafia bleibt niemals sichtbar.",
+  "invis_mafia.rule.visible": "Sichtbar bedeutet Tod. Die Invis Mafia bleibt niemals gesehen.",
+  "invis_mafia.rule.void": "Wenn du in der offenen Welt erwischt wirst, nimmt dich der Void."
 }

@@ -8,10 +8,12 @@ import Invis_Mafia.troop.GroundTroop;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
@@ -19,6 +21,13 @@ import static net.minecraft.core.Registry.register;
 
 public class InvisMafiaExtension implements ModInitializer {
     public static final String MOD_ID = "invis_mafia";
+    public static final String RULE_VISIBLE = "Visible means death. The Invis Mafia never stays seen.";
+    public static final String RULE_VOID = "If you are caught in the open, the void takes you.";
+
+    public static void sendRuleAlert(Player player) {
+        player.sendSystemMessage(Component.literal("§8[Invis Mafia] §7" + RULE_VISIBLE));
+        player.sendSystemMessage(Component.literal("§8[Invis Mafia] §c" + RULE_VOID));
+    }
 
     public static final Item MAFIA_SUMMONER = register(
             BuiltInRegistries.ITEM,

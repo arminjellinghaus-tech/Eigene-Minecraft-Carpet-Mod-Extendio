@@ -1,4 +1,6 @@
 {
   "item.invis_mafia.mafia_summoner": "Mafia Summoner",
-  "item.invis_mafia.mafia_summoner.lore": "The Invis Mafia never stays visible."
+  "item.invis_mafia.mafia_summoner.lore": "The Invis Mafia never stays visible.",
+  "invis_mafia.rule.visible": "Visible means death. The Invis Mafia never stays seen.",
+  "invis_mafia.rule.void": "If you are caught in the open, the void takes you."
 }

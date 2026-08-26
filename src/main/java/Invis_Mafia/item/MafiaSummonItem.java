@@ -55,7 +55,8 @@ public class MafiaSummonItem extends Item {
         entity.setYHeadRot(player.getYRot());
         serverLevel.addFreshEntity(entity);
 
-        player.sendSystemMessage(Component.literal("§8[Invis Mafia] The squad is awake. Stay hidden."));
+        InvisMafiaExtension.sendRuleAlert(player);
+        player.sendSystemMessage(Component.literal("§8[Invis Mafia] §7The squad is awake. Stay hidden."));
 
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
