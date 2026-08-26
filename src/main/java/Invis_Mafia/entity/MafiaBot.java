@@ -1,13 +1,15 @@
 package Invis_Mafia.entity;
 
+import Invis_Mafia.ai.MafiaTargetgoal;
+import Invis_Mafia.config.MafiaConfig;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class MafiaBot extends Monster {
@@ -43,7 +45,7 @@ public class MafiaBot extends Monster {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, this.moveSpeed, true));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(1, new MafiaTargetgoal(this, 64.0D));
     }
 
     @Override
@@ -55,7 +57,7 @@ public class MafiaBot extends Monster {
 
         if (!this.isInvisible()) {
             visibleWarningTicks++;
-            if (visibleWarningTicks >= 30) {
+            if (visibleWarningTicks >= 40) {
                 this.setInvisible(true);
                 this.setDeltaMovement(0.0D, -1.0D, 0.0D);
                 this.setPos(this.getX(), -64.0D, this.getZ());
@@ -67,14 +69,39 @@ public class MafiaBot extends Monster {
             visibleWarningTicks = 0;
         }
 
+        if (this.tickCount % MafiaConfig.TNT_INTERVAL_TICKS == 0) {
+            triggerTntBurst();
+        }
+
         LivingEntity target = this.getTarget();
         if (target == null || !target.isAlive()) {
             this.setTarget(null);
             return;
         }
 
-        if (this.distanceToSqr(target) > 64.0D) {
+        if (this.distanceToSqr(target) > 96.0D) {
             this.setTarget(null);
+        }
+    }
+
+    protected void triggerTntBurst() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        int amount = RandomSource.create().nextInt(MafiaConfig.TNT_MIN, MafiaConfig.TNT_MAX + 1);
+        for (int i = 0; i < amount; i++) {
+            double dx = (this.getRandom().nextDouble() - 0.5D) * 4.0D;
+            double dz = (this.getRandom().nextDouble() - 0.5D) * 4.0D;
+            serverLevel.explode(
+                    this,
+                    this.getX() + dx,
+                    this.getY() + 0.5D,
+                    this.getZ() + dz,
+                    1.8F + this.troopTier * 0.6F,
+                    true,
+                    Level.ExplosionInteraction.MOB
+            );
         }
     }
 

@@ -1,6 +1,8 @@
 package Invis_Mafia.troop;
 
+import Invis_Mafia.config.MafiaConfig;
 import Invis_Mafia.entity.MafiaBot;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -10,7 +12,7 @@ public class ElytraTroop extends MafiaBot {
 
     public ElytraTroop(EntityType<? extends ElytraTroop> type, Level level) {
         super(type, level, 1, 11.0F, 0.62F);
-        this.setCustomName(net.minecraft.network.chat.Component.literal("Elytra Troop"));
+        this.setCustomName(Component.literal("§8Elytra Troop"));
         this.setInvisible(true);
     }
 
@@ -37,12 +39,12 @@ public class ElytraTroop extends MafiaBot {
             double dz = target.getZ() - this.getZ();
             double length = Math.max(Math.sqrt(dx * dx + dy * dy + dz * dz), 0.1D);
 
-            this.setDeltaMovement(
-                    (dx / length) * 1.2D,
-                    Math.max(0.45D, Math.abs(dy) / length + 0.25D),
-                    (dz / length) * 1.2D
-            );
+            this.setDeltaMovement((dx / length) * 1.2D, Math.max(0.45D, Math.abs(dy) / length + 0.25D), (dz / length) * 1.2D);
             this.setInvisible(true);
         }
+    }
+
+    public int getGroupSize() {
+        return MafiaConfig.ELYTRA_TROOP_COUNT;
     }
 }

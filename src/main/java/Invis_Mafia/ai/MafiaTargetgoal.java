@@ -1,5 +1,6 @@
 package Invis_Mafia.ai;
 
+import Invis_Mafia.entity.MafiaBot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
@@ -45,8 +46,14 @@ public class MafiaTargetgoal extends TargetGoal {
         LivingEntity bestTarget = null;
         double bestDistance = Double.MAX_VALUE;
 
-        for (Player player : this.mob.level().players()) {
-            if (player == null || !player.isAlive()) {
+        for (LivingEntity candidate : this.mob.level().getEntitiesOfClass(LivingEntity.class, this.mob.getBoundingBox().inflate(this.radius + 24.0D))) {
+            if (!(candidate instanceof Player player)) {
+                continue;
+            }
+            if (candidate == null || !candidate.isAlive()) {
+                continue;
+            }
+            if (candidate.equals(this.mob) || candidate instanceof MafiaBot) {
                 continue;
             }
 

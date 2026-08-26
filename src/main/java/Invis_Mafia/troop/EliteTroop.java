@@ -1,19 +1,21 @@
 package Invis_Mafia.troop;
 
+import Invis_Mafia.config.MafiaConfig;
 import Invis_Mafia.entity.MafiaBot;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.Explosion;
 
 public class EliteTroop extends MafiaBot {
     private int detonateCooldown;
+    private int totemCooldown;
 
     public EliteTroop(EntityType<? extends EliteTroop> type, Level level) {
         super(type, level, 2, 17.0F, 0.72F);
-        this.setCustomName(net.minecraft.network.chat.Component.literal("Elite Troop"));
+        this.setCustomName(Component.literal("§8Elite Troop"));
         this.setInvisible(true);
         this.setHealth(40.0F);
     }
@@ -28,24 +30,24 @@ public class EliteTroop extends MafiaBot {
         if (detonateCooldown > 0) {
             detonateCooldown--;
         }
+        if (totemCooldown > 0) {
+            totemCooldown--;
+        }
 
         LivingEntity target = this.getTarget();
         if (target == null || !target.isAlive()) {
             return;
         }
 
+        if (this.getHealth() <= this.getMaxHealth() * 0.35F && totemCooldown <= 0) {
+            totemCooldown = 100;
+            this.setHealth(this.getMaxHealth());
+        }
+
         if (this.distanceToSqr(target) <= 4.0D && detonateCooldown <= 0) {
             detonateCooldown = 60;
             if (this.level() instanceof ServerLevel serverLevel) {
-                serverLevel.explode(
-                        this,
-                        this.getX(),
-                        this.getY(),
-                        this.getZ(),
-                        2.4F,
-                        true,
-                        Level.ExplosionInteraction.MOB
-                );
+                serverLevel.explode(this, this.getX(), this.getY(), this.getZ(), 2.4F, true, Level.ExplosionInteraction.MOB);
             }
 
             for (Player player : this.level().players()) {
@@ -57,5 +59,9 @@ public class EliteTroop extends MafiaBot {
                 }
             }
         }
+    }
+
+    public int getGroupSize() {
+        return MafiaConfig.ELITE_TROOP_COUNT;
     }
 }
