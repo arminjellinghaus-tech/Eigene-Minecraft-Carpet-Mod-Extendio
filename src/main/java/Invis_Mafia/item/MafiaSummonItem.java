@@ -1,9 +1,7 @@
 package Invis_Mafia.item;
 
 import Invis_Mafia.InvisMafiaExtension;
-import Invis_Mafia.troop.EliteTroop;
-import Invis_Mafia.troop.ElytraTroop;
-import Invis_Mafia.troop.GroundTroop;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -13,11 +11,27 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
+
+import java.util.function.Consumer;
 
 public class MafiaSummonItem extends Item {
     public MafiaSummonItem(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        return Component.literal("§7Mafia Summoner");
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> consumer, TooltipFlag flag) {
+        consumer.accept(Component.literal("§8The Invis Mafia never stays visible."));
+        consumer.accept(Component.literal("§cRule: if you are seen, you are thrown into the void."));
+        consumer.accept(Component.literal("§7Summons an elite, silent, hunting squad."));
     }
 
     @Override
@@ -40,6 +54,8 @@ public class MafiaSummonItem extends Item {
         entity.setXRot(0.0F);
         entity.setYHeadRot(player.getYRot());
         serverLevel.addFreshEntity(entity);
+
+        player.sendSystemMessage(Component.literal("§8[Invis Mafia] The squad is awake. Stay hidden."));
 
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
