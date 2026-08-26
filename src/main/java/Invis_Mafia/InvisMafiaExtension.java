@@ -1,6 +1,7 @@
 package Invis_Mafia;
 
 import Invis_Mafia.entity.MafiaBot;
+import Invis_Mafia.item.AshwagSealItem;
 import Invis_Mafia.item.MafiaSummonItem;
 import Invis_Mafia.troop.EliteTroop;
 import Invis_Mafia.troop.ElytraTroop;
@@ -33,6 +34,12 @@ public class InvisMafiaExtension implements ModInitializer {
             BuiltInRegistries.ITEM,
             Identifier.fromNamespaceAndPath(MOD_ID, "mafia_summoner"),
             new MafiaSummonItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON))
+    );
+
+    public static final Item ASHWAG_SEAL = register(
+            BuiltInRegistries.ITEM,
+            Identifier.fromNamespaceAndPath(MOD_ID, "ashwag_seal"),
+            new AshwagSealItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE))
     );
 
     public static final EntityType<GroundTroop> GROUND_TROOP = register(
