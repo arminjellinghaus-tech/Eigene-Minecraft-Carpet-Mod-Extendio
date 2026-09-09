@@ -30,44 +30,59 @@ public class InvisMafiaExtension implements ModInitializer {
         player.sendSystemMessage(Component.literal("§8[Invis Mafia] §c" + RULE_VOID));
     }
 
-    public static final Item MAFIA_SUMMONER = register(
-            BuiltInRegistries.ITEM,
-            Identifier.fromNamespaceAndPath(MOD_ID, "mafia_summoner"),
-            new MafiaSummonItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON))
-    );
-
-    public static final Item ASHWAG_SEAL = register(
-            BuiltInRegistries.ITEM,
-            Identifier.fromNamespaceAndPath(MOD_ID, "ashwag_seal"),
-            new AshwagSealItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE))
-    );
-
-    public static final EntityType<GroundTroop> GROUND_TROOP = register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "ground_troop"),
-            EntityType.Builder.of(GroundTroop::new, MobCategory.MONSTER)
-                    .sized(0.6F, 1.8F)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "ground_troop")))
-    );
-
-    public static final EntityType<ElytraTroop> ELYTRA_TROOP = register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "elytra_troop"),
-            EntityType.Builder.of(ElytraTroop::new, MobCategory.MONSTER)
-                    .sized(0.6F, 1.8F)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "elytra_troop")))
-    );
-
-    public static final EntityType<EliteTroop> ELITE_TROOP = register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "elite_troop"),
-            EntityType.Builder.of(EliteTroop::new, MobCategory.MONSTER)
-                    .sized(0.8F, 2.0F)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "elite_troop")))
-    );
+    public static Item MAFIA_SUMMONER;
+    public static Item ASHWAG_SEAL;
+    public static EntityType<GroundTroop> GROUND_TROOP;
+    public static EntityType<ElytraTroop> ELYTRA_TROOP;
+    public static EntityType<EliteTroop> ELITE_TROOP;
 
     @Override
     public void onInitialize() {
-        // Nothing extra needed; all registration is done during class loading.
+        Identifier mafiaSummonerId = Identifier.fromNamespaceAndPath(MOD_ID, "mafia_summoner");
+        MAFIA_SUMMONER = register(
+                BuiltInRegistries.ITEM,
+                mafiaSummonerId,
+                new MafiaSummonItem(new Item.Properties()
+                        .setId(ResourceKey.create(Registries.ITEM, mafiaSummonerId))
+                        .stacksTo(1)
+                        .rarity(Rarity.UNCOMMON))
+        );
+
+        Identifier ashwagSealId = Identifier.fromNamespaceAndPath(MOD_ID, "ashwag_seal");
+        ASHWAG_SEAL = register(
+                BuiltInRegistries.ITEM,
+                ashwagSealId,
+                new AshwagSealItem(new Item.Properties()
+                        .setId(ResourceKey.create(Registries.ITEM, ashwagSealId))
+                        .stacksTo(1)
+                        .rarity(Rarity.RARE))
+        );
+
+        Identifier groundTroopId = Identifier.fromNamespaceAndPath(MOD_ID, "ground_troop");
+        GROUND_TROOP = register(
+                BuiltInRegistries.ENTITY_TYPE,
+                groundTroopId,
+                EntityType.Builder.of(GroundTroop::new, MobCategory.MONSTER)
+                        .sized(0.6F, 1.8F)
+                        .build(ResourceKey.create(Registries.ENTITY_TYPE, groundTroopId))
+        );
+
+        Identifier elytraTroopId = Identifier.fromNamespaceAndPath(MOD_ID, "elytra_troop");
+        ELYTRA_TROOP = register(
+                BuiltInRegistries.ENTITY_TYPE,
+                elytraTroopId,
+                EntityType.Builder.of(ElytraTroop::new, MobCategory.MONSTER)
+                        .sized(0.6F, 1.8F)
+                        .build(ResourceKey.create(Registries.ENTITY_TYPE, elytraTroopId))
+        );
+
+        Identifier eliteTroopId = Identifier.fromNamespaceAndPath(MOD_ID, "elite_troop");
+        ELITE_TROOP = register(
+                BuiltInRegistries.ENTITY_TYPE,
+                eliteTroopId,
+                EntityType.Builder.of(EliteTroop::new, MobCategory.MONSTER)
+                        .sized(0.8F, 2.0F)
+                        .build(ResourceKey.create(Registries.ENTITY_TYPE, eliteTroopId))
+        );
     }
 }
