@@ -15,7 +15,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.InvisMafiaCreativeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 import static net.minecraft.core.Registry.register;
@@ -35,6 +38,7 @@ public class InvisMafiaExtension implements ModInitializer {
     public static EntityType<GroundTroop> GROUND_TROOP;
     public static EntityType<ElytraTroop> ELYTRA_TROOP;
     public static EntityType<EliteTroop> ELITE_TROOP;
+        public static CreativeModeTab MAFIA_TAB;
 
     @Override
     public void onInitialize() {
@@ -84,5 +88,12 @@ public class InvisMafiaExtension implements ModInitializer {
                         .sized(0.8F, 2.0F)
                         .build(ResourceKey.create(Registries.ENTITY_TYPE, eliteTroopId))
         );
+
+                Identifier mafiaTabId = Identifier.fromNamespaceAndPath(MOD_ID, "mafia_tab");
+                MAFIA_TAB = register(
+                                BuiltInRegistries.CREATIVE_MODE_TAB,
+                                mafiaTabId,
+                        InvisMafiaCreativeTab.create(MAFIA_SUMMONER, ASHWAG_SEAL)
+                );
     }
 }
