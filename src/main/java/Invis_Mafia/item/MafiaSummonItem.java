@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import java.util.function.Consumer;
@@ -42,25 +43,43 @@ public class MafiaSummonItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
+        activate((ServerLevel) level, player, hand);
+        return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        if (context.getLevel().isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        Player player = context.getPlayer();
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
+
+        activate((ServerLevel) context.getLevel(), player, context.getHand());
+        return InteractionResult.CONSUME;
+    }
+
+    private void activate(ServerLevel serverLevel, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        ServerLevel serverLevel = (ServerLevel) level;
 
         int roll = RandomSource.create().nextInt(3);
         EntityType<? extends Mob> troop = chooseTroop(roll);
         int count = chooseCount(roll);
-        spawnGroup(serverLevel, player, troop, count);
+        int spawned = spawnGroup(serverLevel, player, troop, count);
 
         InvisMafiaExtension.sendRuleAlert(player);
-        player.sendSystemMessage(Component.literal("§8[Invis Mafia] §7The squad is awake. Stay hidden."));
+        player.sendSystemMessage(Component.literal("§8[Invis Mafia] §7Summoned " + spawned + " of " + count + " troops."));
 
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
         }
-
-        return InteractionResult.CONSUME;
     }
 
-    private void spawnGroup(ServerLevel serverLevel, Player player, EntityType<? extends Mob> troop, int count) {
+    private int spawnGroup(ServerLevel serverLevel, Player player, EntityType<? extends Mob> troop, int count) {
+        int spawned = 0;
         for (int index = 0; index < count; index++) {
             Mob entity = troop.create(serverLevel, EntitySpawnReason.SPAWN_ITEM_USE);
             if (entity == null) {
@@ -74,7 +93,9 @@ public class MafiaSummonItem extends Item {
             entity.setXRot(0.0F);
             entity.setYHeadRot(player.getYRot());
             serverLevel.addFreshEntity(entity);
+            spawned++;
         }
+        return spawned;
     }
 
     private EntityType<? extends Mob> chooseTroop(int roll) {

@@ -8,6 +8,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 public class AshwagSealItem extends Item {
@@ -26,7 +27,26 @@ public class AshwagSealItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
-        ServerLevel serverLevel = (ServerLevel) level;
+        activate((ServerLevel) level, player, hand);
+        return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        if (context.getLevel().isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        Player player = context.getPlayer();
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
+
+        activate((ServerLevel) context.getLevel(), player, context.getHand());
+        return InteractionResult.CONSUME;
+    }
+
+    private void activate(ServerLevel serverLevel, Player player, InteractionHand hand) {
         double x = player.getX();
         double y = player.getY() + 1.0D;
         double z = player.getZ();
@@ -38,7 +58,5 @@ public class AshwagSealItem extends Item {
         if (!player.getAbilities().instabuild) {
             player.getItemInHand(hand).shrink(1);
         }
-
-        return InteractionResult.CONSUME;
     }
 }
