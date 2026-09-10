@@ -7,6 +7,7 @@ import Invis_Mafia.troop.EliteTroop;
 import Invis_Mafia.troop.ElytraTroop;
 import Invis_Mafia.troop.GroundTroop;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -15,10 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.InvisMafiaCreativeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 import static net.minecraft.core.Registry.register;
@@ -38,7 +36,6 @@ public class InvisMafiaExtension implements ModInitializer {
     public static EntityType<GroundTroop> GROUND_TROOP;
     public static EntityType<ElytraTroop> ELYTRA_TROOP;
     public static EntityType<EliteTroop> ELITE_TROOP;
-        public static CreativeModeTab MAFIA_TAB;
 
     @Override
     public void onInitialize() {
@@ -89,11 +86,13 @@ public class InvisMafiaExtension implements ModInitializer {
                         .build(ResourceKey.create(Registries.ENTITY_TYPE, eliteTroopId))
         );
 
-                Identifier mafiaTabId = Identifier.fromNamespaceAndPath(MOD_ID, "mafia_tab");
-                MAFIA_TAB = register(
-                                BuiltInRegistries.CREATIVE_MODE_TAB,
-                                mafiaTabId,
-                        InvisMafiaCreativeTab.create(MAFIA_SUMMONER, ASHWAG_SEAL)
+                ResourceKey<net.minecraft.world.item.CreativeModeTab> operatorTab = ResourceKey.create(
+                        Registries.CREATIVE_MODE_TAB,
+                        Identifier.withDefaultNamespace("op_blocks")
                 );
+                CreativeModeTabEvents.modifyOutputEvent(operatorTab).register(output -> {
+                    output.accept(MAFIA_SUMMONER);
+                    output.accept(ASHWAG_SEAL);
+                });
     }
 }

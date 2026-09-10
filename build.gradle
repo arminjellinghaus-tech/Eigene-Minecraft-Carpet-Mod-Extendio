@@ -28,6 +28,7 @@ dependencies {
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "maven.modrinth:carpet:${project.carpet_version}"
 	implementation "maven.modrinth:fabric-api:${project.fabric_api_version}"
+	implementation "net.fabricmc.fabric-api:fabric-creative-tab-api-v1:${project.fabric_creative_tab_api_version}"
 }
 
 processResources {
